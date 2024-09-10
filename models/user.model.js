@@ -63,8 +63,17 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 };
 
 userSchema.methods.generateAccessToken = function () {
+	// console.log({
+	// 	id: this._id,
+	// 	name: this.userName,
+	// 	fullName: this.fullName,
+	// 	userEmail: this.userEmail,
+	// });
+	
+	// console.log("expiry--",process.env.ACCESS_TOKEN_EXPIRY);
+	
 	return jwt.sign(
-		{
+		{ 
 			id: this._id,
 			name: this.userName,
 			fullName: this.fullName,
