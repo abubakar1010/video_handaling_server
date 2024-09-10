@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUser, logOutUser, refreshAccessToken, registerUser } from "../controllers/user.controller.js";
+import { getUserChannelProfile, loginUser, logOutUser, refreshAccessToken, registerUser } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import verifyToken from "../middlewares/auth.middleware.js";
 
@@ -25,5 +25,7 @@ router.route("/login").post(loginUser)
 router.route("/logout").post(verifyToken, logOutUser)
 
 router.route("/refresh-token").post(refreshAccessToken)
+
+router.route("/channel/:userName").post(getUserChannelProfile)
 
 export default router
