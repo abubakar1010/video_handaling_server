@@ -242,7 +242,35 @@ const changeCurrentPassword = asyncHandler( async (req, res) => {
 		.json(new ApiResponse(200, {}, "Password Changed Successfully"))
 })
 
+const getCurrentUser = asyncHandler( async( req, res ) => {
+	
+	res
+	.status(200)
+	.json(200, req.user, "Current User Get successfully")
+})
 
+
+const updateUser = asyncHandler( async (req, res) => {
+
+	const {fullName, userEmail} = req.body;
+
+	if( !fullName || !userEmail) throw new ApiError(404, "full name or email are not found")
+
+	const user = await User.findByIdAndUpdate(
+		req.user?.id,
+		{
+			$set:{
+				fullName,
+				userEmail
+			}
+		},
+		{new: true}
+	).select(" -password -refreshToken")
+
+	res
+	.status(200)
+	.json(new ApiResponse(200, user, "User update Successful"))
+})
 
 
 
