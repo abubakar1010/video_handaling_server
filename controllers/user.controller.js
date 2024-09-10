@@ -196,10 +196,12 @@ const logOutUser = asyncHandler(async (req, res) => {
 const refreshAccessToken = asyncHandler(async( req, res ) => {
 
 	const incomingRefreshToken = req.cookies.refreshToken
+	console.log(req.cookies);
+	
 
 	if(!incomingRefreshToken) throw new ApiError(404, "Incoming Token not found")
 
-		const decodedToken = jwt.verify(incomingRefreshToken, process.env.ACCESS_TOKEN_SECRET,)
+		const decodedToken =  jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
 
 		const user = await User.findById(decodedToken.id)
 
@@ -221,4 +223,4 @@ const refreshAccessToken = asyncHandler(async( req, res ) => {
 		.json(new ApiResponse(200,{accessToken, refreshToken}, "Access Token Refresh"))
 })
 
-export { registerUser, loginUser, logOutUser };
+export { registerUser, loginUser, logOutUser, refreshAccessToken };
