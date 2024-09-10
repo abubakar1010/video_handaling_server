@@ -272,6 +272,53 @@ const updateUser = asyncHandler( async (req, res) => {
 	.json(new ApiResponse(200, user, "User update Successful"))
 })
 
+const updateAvatar = asyncHandler( async (req, res ) => {
+
+	const path = req.file?.path
+
+	if(!path) throw new ApiError(400, "Avatar File Not Found")
+
+	const avatar = await uploadOnCloudinary(path)
+
+	if( avatar?.url) throw new ApiError(400,"Error while uploading avatar on cloudinary")
+
+	const user = await User.findByIdAndUpdate(req.user.id,
+		{
+			$set:{
+				avatar: avatar.url
+			}
+		},
+		{new: true}
+	).select(" -password -refreshToken")
+
+	res
+	.status(200)
+	.json(new ApiResponse(200, user, "Avatar update successfully"))
+})
+const updateCoverImage = asyncHandler( async (req, res ) => {
+
+	const path = req.file?.path
+
+	if(!path) throw new ApiError(400, "Cover image file Not Found")
+
+	const avatar = await uploadOnCloudinary(path)
+
+	if( avatar?.url) throw new ApiError(400,"Error while uploading cover image on cloudinary")
+
+	const user = await User.findByIdAndUpdate(req.user.id,
+		{
+			$set:{
+				avatar: avatar.url
+			}
+		},
+		{new: true}
+	).select(" -password -refreshToken")
+
+	res
+	.status(200)
+	.json(new ApiResponse(200, user, "Cover Image update successfully"))
+})
+
 
 
 export { registerUser, loginUser, logOutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser };
