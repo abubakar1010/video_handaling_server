@@ -329,73 +329,90 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 });
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
+
 	const { userName } = req.params;
 
 	if (!userName) throw new ApiError(404, "user name not found ");
 
+	console.log(userName);
+
 	const channel = await User.aggregate([
+		
 		{
-			$match: {
-				userName: userName?.toLowerCase(),
-			},
-		},
-		{
-			$lookup: {
-				from: "subscriptions",
-				localField: "_id",
-				foreignField: "channel",
-				as: "subscribers",
-			},
-		},
-		{
-			$lookup: {
-				from: "subscriptions",
-				localField: "_id",
-				foreignField: "subscriber",
-				as: "subscribedTo",
-			},
-		},
-		{
-			$addFields: {
-				subscribersCount: {
-					$size: "$subscribers",
-				},
-				subscribedChannelCount: {
-					$size: "$subscribedTo",
-				},
-				isSubscribed: {
-					$cond: {
-						if: { $in: [req?.user?.id, "$subscribers.subscriber"] },
-						then: true,
-						else: false,
+					$lookup: {
+						from: "subscriptions",
+						localField: "_id",
+						foreignField: "channel",
+						as: "subscribers",
 					},
 				},
-			},
-		},
-		{
-			$project: {
-				fullName: 1,
-				userName: 1,
-				userEmail: 1,
-				avatar: 1,
-				coverImage: 1,
-				subscribersCount: 1,
-				subscribedChannelCount: 1,
-				isSubscribed: 1,
-			},
-		},
-	]);
+	])
+	
+
+	// const channel = await User.aggregate([
+	// 	{
+	// 		$match: {
+	// 			userName: userName?.toLowerCase(),
+	// 		},
+	// 	},
+	// 	{
+	// 		$lookup: {
+	// 			from: "subscriptions",
+	// 			localField: "_id",
+	// 			foreignField: "channel",
+	// 			as: "subscribers",
+	// 		},
+	// 	},
+	// 	{
+	// 		$lookup: {
+	// 			from: "subscriptions",
+	// 			localField: "_id",
+	// 			foreignField: "subscriber",
+	// 			as: "subscribedTo",
+	// 		},
+	// 	},
+	// 	{
+	// 		$addFields: {
+	// 			subscribersCount: {
+	// 				$size: "$subscribers",
+	// 			},
+	// 			subscribedChannelCount: {
+	// 				$size: "$subscribedTo",
+	// 			},
+	// 			isSubscribed: {
+	// 				$cond: {
+	// 					if: { $in: [req?.user?.id, "$subscribers.subscriber"] },
+	// 					then: true,
+	// 					else: false,
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	{
+	// 		$project: {
+	// 			fullName: 1,
+	// 			userName: 1,
+	// 			userEmail: 1,
+	// 			avatar: 1,
+	// 			coverImage: 1,
+	// 			subscribersCount: 1,
+	// 			subscribedChannelCount: 1,
+	// 			isSubscribed: 1,
+	// 		},
+	// 	},
+	// ]);
 
 	// const channel = await User.find({userName})
 
-	// console.log(channel);
+	console.log(channel);
 
-	if (!(channel.length > 0)) throw new ApiError(400, "channel not exist");
+	// if (!(channel.length > 0)) throw new ApiError(400, "channel not exist");
 
 	res.status(200).json(
 		new ApiResponse(200, channel[0], "Channel profile successfully updated")
 	);
 });
+
 
 export {
 	registerUser,

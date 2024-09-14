@@ -11,6 +11,9 @@ connectDB()
         throw error;
         
     })
+    app.get("/", (req, res) => {
+        res.json({value:"this is opening"})
+    })
     app.listen(process.env.PORT || 5000, () => {
         console.log(`app is running on port ${process.env.PORT}`);
         
